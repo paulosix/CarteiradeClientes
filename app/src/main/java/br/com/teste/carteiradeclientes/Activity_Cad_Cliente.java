@@ -43,6 +43,7 @@ public class Activity_Cad_Cliente extends AppCompatActivity {
         setContentView(R.layout.activity__cad__cliente);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         edtNome = (EditText)findViewById(R.id.edtNome);
         edtEndereco = (EditText)findViewById(R.id.edtEndereco);
@@ -52,7 +53,21 @@ public class Activity_Cad_Cliente extends AppCompatActivity {
         layoutCadCliente = (ConstraintLayout)findViewById(R.id.layoutCadCliente);
 
         criarConexao();
+        verificaParametro();
+    }
 
+    private void verificaParametro(){
+        Bundle bundle = getIntent().getExtras();
+        cliente = new Cliente();
+
+        if ((bundle != null) && (bundle.containsKey("CLIENTE"))){
+            cliente = (Cliente) bundle.getSerializable("CLIENTE");
+
+            edtNome.setText(cliente.nome);
+            edtEndereco.setText(cliente.endereco);
+            edtEmail.setText(cliente.email);
+            edtTelefone.setText(cliente.telefone);
+        }
     }
 
     @Override
@@ -65,13 +80,14 @@ public class Activity_Cad_Cliente extends AppCompatActivity {
 
     private void confirmar(){
 
-        cliente = new Cliente();
-
         if (validaCampos() == false)  {
 
             try {
 
-                clienteReporitorio.inserir(cliente);
+                if (cliente.codigo == 0)
+                    clienteReporitorio.inserir(cliente);
+                else
+                    clienteReporitorio.alterar(cliente);
 
                 finish();
 
@@ -145,13 +161,14 @@ public class Activity_Cad_Cliente extends AppCompatActivity {
 
         switch (id)
         {
+            case android.R.id.home:
+                finish();
+                break;
             case R.id.action_ok:
                 confirmar();
-                //Toast.makeText(this, "Botão ok selecionado", Toast.LENGTH_SHORT).show();
-
                 break;
-            case R.id.action_cancelar:
-                //Toast.makeText(this,"Botão cancelar selecionado", Toast.LENGTH_SHORT).show();
+            case R.id.action_excluir:
+                clienteReporitorio.excluir(cliente.codigo);
                 finish();
                 break;
 

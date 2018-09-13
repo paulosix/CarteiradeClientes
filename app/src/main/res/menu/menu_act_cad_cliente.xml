@@ -10,8 +10,8 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_cancelar"
-        android:title="@string/title_menu_cancelar"
+        android:id="@+id/action_excluir"
+        android:title="@string/excluir"
         android:orderInCategory="2"
         app:showAsAction="ifRoom" />
 </menu>

@@ -17,7 +17,7 @@ public class ClienteReporitorio {
         this.sqLiteDatabase = sqLiteDatabase;
     }
 
-    public void inserir(Cliente cliente){
+    public void inserir(Cliente cliente) {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("NOME", cliente.nome);
@@ -29,16 +29,16 @@ public class ClienteReporitorio {
 
     }
 
-    public void excluir(int codigo){
+    public void excluir(int codigo) {
 
         String[] parametros = new String[1];
         parametros[0] = String.valueOf(codigo);
 
-        this.sqLiteDatabase.delete("CLIENTE","CODIGO = ? ", parametros);
+        this.sqLiteDatabase.delete("CLIENTE", "CODIGO = ? ", parametros);
     }
 
 
-    public void alterar(Cliente cliente){
+    public void alterar(Cliente cliente) {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("NOME", cliente.nome);
@@ -53,7 +53,7 @@ public class ClienteReporitorio {
 
     }
 
-    public List<Cliente> getAllClientes(){
+    public List<Cliente> getAllClientes() {
 
         List<Cliente> clientes = new ArrayList<Cliente>();
 
@@ -61,32 +61,36 @@ public class ClienteReporitorio {
         sql.append("SELECT CODIGO,NOME,ENDERECO,EMAIL,TELEFONE ");
         sql.append(" FROM CLIENTE ");
 
-        Cursor resultado =  sqLiteDatabase.rawQuery(sql.toString(), null);
+        Cursor resultado = sqLiteDatabase.rawQuery(sql.toString(), null);
 
 
-        if (resultado.getCount() > 0){
+        if (resultado.getCount() > 0) {
 
-            resultado.moveToFirst();
+            try {
 
-            do{
+                while (resultado.moveToNext()) {
 
-                Cliente cli = new Cliente();
+                    Cliente cli = new Cliente();
 
-                cli.codigo    = resultado.getInt(resultado.getColumnIndexOrThrow("CODIGO"));
-                cli.nome      = resultado.getString(resultado.getColumnIndexOrThrow("NOME"));
-                cli.endereco  = resultado.getString(resultado.getColumnIndexOrThrow("ENDERECO"));
-                cli.email     = resultado.getString(resultado.getColumnIndexOrThrow("EMAIL"));
-                cli.telefone  = resultado.getString(resultado.getColumnIndexOrThrow("TELEFONE"));
+                    cli.codigo = resultado.getInt(resultado.getColumnIndexOrThrow("CODIGO"));
+                    cli.nome = resultado.getString(resultado.getColumnIndexOrThrow("NOME"));
+                    cli.endereco = resultado.getString(resultado.getColumnIndexOrThrow("ENDERECO"));
+                    cli.email = resultado.getString(resultado.getColumnIndexOrThrow("EMAIL"));
+                    cli.telefone = resultado.getString(resultado.getColumnIndexOrThrow("TELEFONE"));
 
-                clientes.add(cli);
+                    clientes.add(cli);
 
-            }while (resultado.moveToFirst());
+                }
+
+            } finally {
+                resultado.close();
+            }
         }
 
         return clientes;
     }
 
-    public Cliente getClienteByCodigo(int codigo){
+    public Cliente getClienteByCodigo(int codigo) {
 
         Cliente cliente = new Cliente();
 
@@ -98,18 +102,18 @@ public class ClienteReporitorio {
         String[] parametros = new String[1];
         parametros[0] = String.valueOf(codigo);
 
-        Cursor resultado =  sqLiteDatabase.rawQuery(sql.toString(), parametros);
+        Cursor resultado = sqLiteDatabase.rawQuery(sql.toString(), parametros);
 
-        if (resultado.getCount() > 0){
+        if (resultado.getCount() > 0) {
 
             resultado.moveToFirst();
 
 
-            cliente.codigo    = resultado.getInt(resultado.getColumnIndexOrThrow("CODIGO"));
-            cliente.nome      = resultado.getString(resultado.getColumnIndexOrThrow("NOME"));
-            cliente.endereco  = resultado.getString(resultado.getColumnIndexOrThrow("ENDERECO"));
-            cliente.email     = resultado.getString(resultado.getColumnIndexOrThrow("EMAIL"));
-            cliente.telefone  = resultado.getString(resultado.getColumnIndexOrThrow("TELEFONE"));
+            cliente.codigo = resultado.getInt(resultado.getColumnIndexOrThrow("CODIGO"));
+            cliente.nome = resultado.getString(resultado.getColumnIndexOrThrow("NOME"));
+            cliente.endereco = resultado.getString(resultado.getColumnIndexOrThrow("ENDERECO"));
+            cliente.email = resultado.getString(resultado.getColumnIndexOrThrow("EMAIL"));
+            cliente.telefone = resultado.getString(resultado.getColumnIndexOrThrow("TELEFONE"));
 
             return cliente;
         }
